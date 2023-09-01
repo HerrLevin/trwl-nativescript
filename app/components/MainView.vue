@@ -13,7 +13,7 @@
     </TabViewItem>
     <TabViewItem title="Checkin">
       <Frame id="items">
-        <HomePage />
+        <CheckinPage />
       </Frame>
     </TabViewItem>
     <TabViewItem title="Statistics">
@@ -36,9 +36,10 @@
   import ActionPage from "~/components/ActionPage.vue";
   import { Screen } from "@nativescript/core/platform";
   import LoginComponent from "~/components/LoginComponent.vue";
+  import CheckinPage from "~/pages/CheckinPage.vue";
 
   export default Vue.extend({
-    components: {LoginComponent, ActionPage, HomePage},
+    components: {CheckinPage, LoginComponent, ActionPage, HomePage},
     computed: {
       message() {
         return "Blank {N}-Vue app";

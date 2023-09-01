@@ -1,5 +1,8 @@
 import Vue from 'nativescript-vue'
 import MainView from "~/components/MainView.vue";
+import RadListView from 'nativescript-ui-listview/vue'
+
+Vue.use(RadListView)
 
 declare let __DEV__: boolean;
 
@@ -16,3 +19,4 @@ new Vue({
     MainView
   }
 }).$start()
+

@@ -4,26 +4,77 @@ import Page2Page from "~/components/Page2Page.vue";
 
 export default Vue.extend({
   name: "HomePage.vue",
-  methods: {
-    page1BtnTap(args: any) {
-      //this.$navigateTo(Page2Page, { frame: 'main' });
-      this.$showModal(Page2Page);
+  data() {
+    return {
+      items: [{
+        name: "Gertrud123",
+        origin: "Karlsruhe Hbf",
+        destination: "Basel Bad Bf."
+      }, {
+        name: "Gertrud123",
+        origin: "Berlin Hbf (tief)",
+        destination: "Hamburg Hbf"
+      }
+      ]
     }
   }
 })
 </script>
 
 <template>
-
   <Page>
-    <StackLayout>
-      <Label text="HomePage"/>
-      <Button text="Go to 2" @tap="page1BtnTap" />
-    </StackLayout>
-  </Page>
+    <RadListView for="item in items">
+      <v-template>
+        <StackLayout class="cars-list__item">
+          <GridLayout class="cars-list__item-content" columns="*, *" rows="*, *, *">
+            <Label :text="'@' + item.name" class="cars-list__item-name font-weight-bold"/>
+            <Label class="m-r-5" col="1" horizontalAlignment="right">
+              <FormattedString>
+                <Span text.decode="&hearts;"/>
+                <Span text="..."/>
+              </FormattedString>
+            </Label>
 
+            <Label class="hr m-y-5" colSpan="2" row="1"/>
+
+            <StackLayout row="2" verticalAlignment="center">
+              <Label class="p-b-10">
+                <FormattedString ios.fontFamily="system">
+                  <Span class="fas cars-list__item-icon" text.decode="&#xf041;    "></Span>
+                  <Span :text="item.origin"/>
+                </FormattedString>
+              </Label>
+              <Label class="p-b-10">
+                <FormattedString ios.fontFamily="system">
+                  <Span class="fas cars-list__item-icon" text.decode="&#xf11e;    "/>
+                  <Span :text="item.destination"/>
+                </FormattedString>
+              </Label>
+            </StackLayout>
+          </GridLayout>
+        </StackLayout>
+      </v-template>
+    </RadListView>
+  </Page>
 </template>
 
 <style scoped lang="scss">
+@import '@nativescript/theme/scss/variables/blue';
+// Custom styles
+.cars-list {
+  &__item {
+    padding: 0 0 8 0;
+    @include colorize($background-color: background-alt-10);
 
+    &-content {
+      padding: 8 15 4 15;
+      @include colorize($background-color: background);
+    }
+
+    &-name,
+    &-icon {
+      @include colorize($contrasted-color: complementary background 30% 0%);
+    }
+  }
+}
 </style>
