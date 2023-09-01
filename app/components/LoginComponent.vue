@@ -1,7 +1,7 @@
 <template>
   <Page>
     <ActionBar>
-      <Label text="Home"/>
+      <Label text="Login"/>
     </ActionBar>
 
     <GridLayout>
