@@ -12,7 +12,7 @@
       </Frame>
     </TabViewItem>
     <TabViewItem title="Checkin">
-      <Frame id="items">
+      <Frame id="checkin">
         <CheckinPage />
       </Frame>
     </TabViewItem>

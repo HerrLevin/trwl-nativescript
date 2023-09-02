@@ -7,7 +7,7 @@
                     android.position="actionBar" />
       </ActionBar>
         <GridLayout rows="auto, *">
-          <SearchBar hint="Search hint" row="0" v-model="searchPhrase" @textChange="onTextChanged"/>
+          <SearchBar hint="Search hint" row="0" v-model="searchPhrase" @textChange="onTextChanged" @loaded="onSearchBarLoaded"/>
           <ListView for="item in items" row="1" ref="list">
             <v-template>
               <Label :text="item" @tap="onTapListItem(item)"/>
@@ -35,8 +35,11 @@ export default Vue.extend({
       });
       this.$refs.list.refresh();
     },
-    onTapListItem(args) {
+    onTapListItem(args: string) {
       this.$modal.close(args);
+    },
+    onSearchBarLoaded(args: any) {
+      args.object.focus();
     }
   }
 });
