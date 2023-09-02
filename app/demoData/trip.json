@@ -1,0 +1,47 @@
+{
+  "data": {
+    "id": 1,
+    "category": "suburban",
+    "number": "4-a6s4-4",
+    "lineName": "S 4",
+    "journeyNumber": 34427,
+    "origin": {
+      "id": 4711,
+      "name": "Karlsruhe Hbf",
+      "latitude": 48.991591,
+      "longitude": 8.400538,
+      "ibnr": 8000191,
+      "rilIdentifier": "RK"
+    },
+    "destination": {
+      "id": 4711,
+      "name": "Karlsruhe Hbf",
+      "latitude": 48.991591,
+      "longitude": 8.400538,
+      "ibnr": 8000191,
+      "rilIdentifier": "RK"
+    },
+    "stopovers": [
+      {
+        "id": 12089,
+        "name": "Karlsruhe Hbf",
+        "rilIdentifier": "RK",
+        "evaIdentifier": 8000191,
+        "arrival": "2022-07-17T14:17:00+02:00",
+        "arrivalPlanned": "2022-07-17T14:17:00+02:00",
+        "arrivalReal": "2022-07-17T14:17:00+02:00",
+        "arrivalPlatformPlanned": "3",
+        "arrivalPlatformReal": "3",
+        "departure": "2022-07-17T14:17:00+02:00",
+        "departurePlanned": "2022-07-17T14:17:00+02:00",
+        "departureReal": "2022-07-17T14:17:00+02:00",
+        "departurePlatformPlanned": "3",
+        "departurePlatformReal": "3",
+        "platform": "3",
+        "isArrivalDelayed": false,
+        "isDeparutreDelayed": false,
+        "cancelled": false
+      }
+    ]
+  }
+}

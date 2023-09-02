@@ -1,6 +1,6 @@
 <template>
   <Page>
-  <TabView androidTabsPosition="bottom" iosIconRenderingMode="alwaysOriginal">
+  <TabView androidTabsPosition="bottom" iosIconRenderingMode="alwaysOriginal" @loaded="storeKey">
     <TabViewItem title="Home">
       <Frame id="items">
         <HomePage />
@@ -37,6 +37,7 @@
   import { Screen } from "@nativescript/core/platform";
   import LoginComponent from "~/components/LoginComponent.vue";
   import CheckinPage from "~/pages/CheckinPage.vue";
+  const appSettings = require("@nativescript/core/application-settings");
 
   export default Vue.extend({
     components: {CheckinPage, LoginComponent, ActionPage, HomePage},
@@ -50,6 +51,9 @@
         const frame = args.object;
 
         frame.translateY = Screen.mainScreen.heightDIPs - 180;
+      },
+      storeKey() {
+        appSettings.setString("API", "");
       }
     }
   });

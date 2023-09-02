@@ -2,13 +2,30 @@
 import Vue from 'vue'
 import StationSheetcomponent from "~/components/StationSheetcomponent.vue";
 import LineRunPage from "~/pages/LineRunPage.vue";
+const appSettings = require("@nativescript/core/application-settings");
+import {getDepartures} from "~/api.service";
+const demo = require("~/demoData/departures.json");
 
 export default Vue.extend({
   name: "CheckinPage",
   data() {
     return {
       inputText: '',
-      departures: ['a', 'b', 'c']
+      departures: [
+        {
+          when: '2023-01-06T13:49:00+01:00',
+          direction: 'Zürich HB',
+          line: {
+            name: 'EC 60'
+          }
+        },{
+          when: '2023-01-06T13:50:00+01:00',
+          direction: 'Karlsruhe Hbf',
+          line: {
+            name: 'ICE 123'
+          }
+        },
+      ]
     }
   },
   methods: {
@@ -18,15 +35,37 @@ export default Vue.extend({
     stationModalCallback(args: string) {
       console.info(args);
       this.inputText = args;
+      this.getDeparturesFrom();
     },
-    tapListItem() {
-      console.info("tapped");
+    tapListItem(train: any) {
       this.$navigateTo(LineRunPage, {
         frame: 'checkin',
-        props: {
-          lineName: 'RE 1435'
-        }
+        props: { train }
       });
+    },
+    renderDeparture(timestring: string): string {
+      let date = Date.parse(timestring);
+      let time = new Date(date);
+      return time.toLocaleTimeString()
+    },
+    getDeparturesFrom() {
+      this.departures = [];
+      this.$refs.departuresListView.refresh();
+      /*
+      this.departures = demo.data;
+
+      this.$refs.departuresListView.refresh();
+      return;*/
+
+      getDepartures(this.inputText).then((response) => {
+        console.info("done");
+        this.inputText = response.meta.station.name;
+        this.departures = response.data;
+        console.log(response);
+
+        this.$refs.departuresListView.refresh();
+      });
+
     }
   }
 })
@@ -36,12 +75,12 @@ export default Vue.extend({
   <Page>
     <GridLayout rows="60, *">
       <TextField row="0" hint="Enter text" color="orangered" backgroundColor="lightyellow" @tap="textFieldTap"/>
-      <ListView row="1" for="departure in departures" class="list-group">
+      <ListView row="1" for="departure in departures" class="list-group" ref="departuresListView">
         <v-template>
-          <GridLayout columns="100, *, 40" @tap="tapListItem">
-            <Label col="0">RE 1435</Label>
-            <Label col="1" :text="departure" class="list-group-item"/>
-            <Label col="2">12:14</Label>
+          <GridLayout columns="100, *, 60" @tap="tapListItem(departure)" class="list-group-item">
+            <Label col="0" :text="departure.line.name" />
+            <Label col="1" :text="departure.direction"/>
+            <Label col="2" :text="renderDeparture(departure.when)" />
           </GridLayout>
         </v-template>
       </ListView>

@@ -8,9 +8,9 @@
       </ActionBar>
         <GridLayout rows="auto, *">
           <SearchBar hint="Search hint" row="0" v-model="searchPhrase" @textChange="onTextChanged" @loaded="onSearchBarLoaded"/>
-          <ListView for="item in items" row="1" ref="list">
+          <ListView for="item in items" row="1" ref="list" class="list-group">
             <v-template>
-              <Label :text="item" @tap="onTapListItem(item)"/>
+              <Label :text="item" @tap="onTapListItem(item)" class="list-group-item"/>
             </v-template>
           </ListView>
         </GridLayout>

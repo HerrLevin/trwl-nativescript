@@ -1,17 +1,17 @@
 <script lang="ts">
 import Vue from 'vue'
+const demo = require("~/demoData/trip.json");
 
 export default Vue.extend({
   name: "LineRunPage",
   props: {
-    lineName: {
-      type: String,
-      default: 'LINIENNUMMER'
+    train: {
+      type: Object
     }
   },
   data() {
     return {
-      departures: ['a', 'b', 'c']
+      stopovers: demo.data.stopovers
     }
   },
 })
@@ -19,12 +19,12 @@ export default Vue.extend({
 
 <template>
   <Page>
-    <ActionBar :title="$props.lineName"/>
-    <ListView for="departure in departures" class="list-group">
+    <ActionBar :title="`${$props.train.line.name} ➜ ${$props.train.direction}`"/>
+    <ListView for="stop in stopovers" class="list-group">
       <v-template>
         <GridLayout columns="100, *, 40">
           <Label col="0">RE 1435</Label>
-          <Label col="1" :text="departure" class="list-group-item"/>
+          <Label col="1" :text="stop.name" class="list-group-item"/>
           <Label col="2">12:14</Label>
         </GridLayout>
       </v-template>
