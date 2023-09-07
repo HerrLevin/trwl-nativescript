@@ -1,5 +1,7 @@
 <script lang="ts">
 import Vue from 'vue'
+import {getLineRun} from "~/api.service";
+import CheckinSheetcomponent from "~/components/CheckinSheetcomponent.vue";
 const demo = require("~/demoData/trip.json");
 
 export default Vue.extend({
@@ -11,21 +13,61 @@ export default Vue.extend({
   },
   data() {
     return {
-      stopovers: demo.data.stopovers
+      stopovers: demo.data.stopovers,
+      start: null,
     }
   },
+  methods: {
+    showCheckInSheet: function (stop: object) {
+      this.$showModal(
+          CheckinSheetcomponent,
+          {
+            props: {
+              lineName: this.$props.train.line.name,
+              tripId: this.$props.train.tripId,
+              start: this.start,
+              destination: stop,
+              departure: this.$props.train.plannedWhen,
+              arrival: stop.arrival
+            }
+          }
+      );
+    },
+    convertTime(time: string) {
+      const newTime = new Date(Date.parse(time));
+      return newTime.toTimeString()
+    },
+    loadLineRun() {
+      console.info("load line run");
+      getLineRun(this.$props.train.tripId, this.$props.train.line.name, this.$props.train.stop.id).then((response) => {
+
+        let stationFound: boolean = false;
+        this.stopovers = response.data.stopovers.filter((stop: any) => {
+          if (!stationFound && stop.evaIdentifier == this.$props.train.stop.id) {
+            this.start = stop;
+            stationFound = true;
+            return false;
+          }
+
+          return stationFound;
+        });
+        console.log(this.stopovers);
+        this.$refs.listView.reload();
+      })
+    }
+  }
 })
 </script>
 
 <template>
-  <Page>
+  <Page @loaded="loadLineRun">
     <ActionBar :title="`${$props.train.line.name} ➜ ${$props.train.direction}`"/>
-    <ListView for="stop in stopovers" class="list-group">
+    <ListView for="stop in stopovers" class="list-group" ref="listView">
       <v-template>
-        <GridLayout columns="100, *, 40">
-          <Label col="0">RE 1435</Label>
+        <GridLayout columns="100, *, 40" @tap="showCheckInSheet(stop)">
+          <Label col="0"></Label>
           <Label col="1" :text="stop.name" class="list-group-item"/>
-          <Label col="2">12:14</Label>
+          <Label col="2" :text="convertTime(stop.arrival)"/>
         </GridLayout>
       </v-template>
     </ListView>

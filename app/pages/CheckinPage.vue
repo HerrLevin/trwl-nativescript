@@ -11,6 +11,7 @@ export default Vue.extend({
   data() {
     return {
       inputText: '',
+      station: null,
       departures: [
         {
           when: '2023-01-06T13:49:00+01:00',
@@ -40,7 +41,7 @@ export default Vue.extend({
     tapListItem(train: any) {
       this.$navigateTo(LineRunPage, {
         frame: 'checkin',
-        props: { train }
+        props: { train, start: this.station}
       });
     },
     renderDeparture(timestring: string): string {
@@ -51,20 +52,21 @@ export default Vue.extend({
     getDeparturesFrom() {
       this.departures = [];
       this.$refs.departuresListView.refresh();
-      /*
-      this.departures = demo.data;
-
-      this.$refs.departuresListView.refresh();
-      return;*/
 
       getDepartures(this.inputText).then((response) => {
         console.info("done");
         this.inputText = response.meta.station.name;
+        this.station = response.meta.station;
         this.departures = response.data;
         console.log(response);
 
         this.$refs.departuresListView.refresh();
+      }).catch((e) => {
+        console.error("some error?");
+        console.error(e);
       });
+
+      console.log("wha");
 
     }
   }

@@ -5,10 +5,13 @@
         <ActionItem @tap="$modal.close(null)"
                     text="Cancel" ios.position="left"
                     android.position="actionBar" />
+        <ActionItem @tap="$modal.close(null)"
+                    text="GPS" ios.position="right"
+                    android.position="actionBar" />
       </ActionBar>
         <GridLayout rows="auto, *">
           <SearchBar hint="Search hint" row="0" v-model="searchPhrase" @textChange="onTextChanged" @loaded="onSearchBarLoaded"/>
-          <ListView for="item in items" row="1" ref="list" class="list-group">
+          <ListView for="item in stations" row="1" ref="list" class="list-group">
             <v-template>
               <Label :text="item" @tap="onTapListItem(item)" class="list-group-item"/>
             </v-template>
@@ -24,14 +27,14 @@ import Vue from "nativescript-vue";
 export default Vue.extend({
   data() {
     return {
-      items: ['a', 'b', 'c'],
+      stations: ['a', 'b', 'c'],
       searchPhrase: ''
     }
   },
   methods: {
     onTextChanged() {
-      this.items.forEach((value, index) => {
-        this.items[index] = this.searchPhrase;
+      this.stations.forEach((value, index) => {
+        this.stations[index] = this.searchPhrase;
       });
       this.$refs.list.refresh();
     },
