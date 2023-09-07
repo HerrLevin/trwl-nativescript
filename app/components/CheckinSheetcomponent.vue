@@ -72,8 +72,18 @@ export default Vue.extend({
           false,
           this.statusText
       ).then((response) => {
+        console.log(response);
+        const status = response.data.status;
+        const points = response.data.points;
+        alert({
+          title: "Checkin Success!",
+          message: `You've successfully checked into ${status.train.lineName} with ${points.points} points in status id ${status.id}`,
+          okButtonText: "NICE!"
+        }).then(() => {
+          this.$modal?.close();
+        })
         console.info(response);
-      });
+      }).catch(console.error);
     }
   }
 });
