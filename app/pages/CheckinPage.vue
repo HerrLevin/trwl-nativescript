@@ -76,7 +76,14 @@ export default Vue.extend({
 <template>
   <Page>
     <GridLayout rows="60, *">
-      <TextField row="0" hint="Enter text" color="orangered" backgroundColor="lightyellow" @tap="textFieldTap"/>
+      <TextField
+          row="0"
+          hint="Stationsname oder DS100"
+          v-model="inputText"
+          color="orangered"
+          backgroundColor="lightyellow"
+          @tap="textFieldTap"
+      />
       <ListView row="1" for="departure in departures" class="list-group" ref="departuresListView">
         <v-template>
           <GridLayout columns="100, *, 60" @tap="tapListItem(departure)" class="list-group-item">

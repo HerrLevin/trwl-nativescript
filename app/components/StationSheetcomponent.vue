@@ -1,42 +1,30 @@
-<template>
-  <Frame>
-    <Page>
-      <ActionBar title="Select point of departure">
-        <ActionItem @tap="$modal.close(null)"
-                    text="Cancel" ios.position="left"
-                    android.position="actionBar" />
-        <ActionItem @tap="$modal.close(null)"
-                    text="GPS" ios.position="right"
-                    android.position="actionBar" />
-      </ActionBar>
-        <GridLayout rows="auto, *">
-          <SearchBar hint="Search hint" row="0" v-model="searchPhrase" @textChange="onTextChanged" @loaded="onSearchBarLoaded"/>
-          <ListView for="item in stations" row="1" ref="list" class="list-group">
-            <v-template>
-              <Label :text="item" @tap="onTapListItem(item)" class="list-group-item"/>
-            </v-template>
-          </ListView>
-        </GridLayout>
-    </Page>
-  </Frame>
-</template>
-
 <script lang="ts">
 import Vue from "nativescript-vue";
+import debounce from 'lodash-es/debounce'
+import {autocomplete} from "~/api.service";
 
 export default Vue.extend({
   data() {
     return {
-      stations: ['a', 'b', 'c'],
-      searchPhrase: ''
+      stations: [],
+      searchPhrase: '',
+      onTextchanged: <any> null
+    }
+  },
+  mounted() {
+    this.onTextchanged = debounce(this.fetchStations, 200);
+  },
+  destroyed() {
+    if (this.onTextchanged) {
+      this.onTextchanged.cancel();
     }
   },
   methods: {
-    onTextChanged() {
-      this.stations.forEach((value, index) => {
-        this.stations[index] = this.searchPhrase;
+    fetchStations() {
+      autocomplete(this.searchPhrase).then((result) => {
+        this.stations = result.data;
+        this.$refs.list.refresh();
       });
-      this.$refs.list.refresh();
     },
     onTapListItem(args: string) {
       this.$modal.close(args);
@@ -48,6 +36,35 @@ export default Vue.extend({
 });
 </script>
 
+<template>
+  <Frame>
+    <Page>
+      <ActionBar title="Select point of departure">
+        <ActionItem @tap="$modal.close(null)"
+                    text="Cancel" ios.position="left"
+                    android.position="actionBar"/>
+        <ActionItem @tap="$modal.close(null)"
+                    text="GPS" ios.position="right"
+                    android.position="actionBar"/>
+      </ActionBar>
+      <GridLayout rows="auto, *">
+        <SearchBar hint="Search hint" row="0" v-model="searchPhrase" @textChange="onTextchanged"
+                   @loaded="onSearchBarLoaded"/>
+        <ListView for="item in stations" row="1" ref="list" class="list-group">
+          <v-template>
+            <GridLayout class="list-group-item">
+              <Label
+                  :text="`${item.name} ${item.rilIdentifier ? '(' + item.rilIdentifier + ')' : ''}`"
+                  @tap="onTapListItem(item.name)"
+              />
+            </GridLayout>
+          </v-template>
+        </ListView>
+      </GridLayout>
+    </Page>
+  </Frame>
+</template>
+
 <style scoped lang="scss">
 @import '@nativescript/theme/scss/variables/blue';
 
@@ -56,9 +73,4 @@ export default Vue.extend({
   @include colorize($color: accent);
 }
 
-.info {
-  font-size: 20;
-  horizontal-align: center;
-  vertical-align: center;
-}
 </style>
