@@ -83,6 +83,7 @@ export class API {
 
   getDepartures(stationName: string): Promise<any> {
     console.info("getDepartures");
+    stationName = stationName.replace("/", "%20");
     return fetchAPI(`/trains/station/${encodeURI(stationName)}/departures`);
   }
 
@@ -249,13 +250,13 @@ enum category {
   taxi = "taxi"
 }
 
-enum Business {
+export enum Business {
   Private = 0,
   Business = 1,
   Commute = 2,
 }
 
-enum Visibility {
+export enum Visibility {
   Public = 0,
   Unlisted = 1,
   Followers = 2,

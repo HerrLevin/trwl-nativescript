@@ -13,8 +13,20 @@
               @loaded="onTextViewLoaded"
               autocorrect="true"
           />
+          <GridLayout columns="auto,auto,*,auto" class="p-0 m-0" rows="auto">
+            <Button col="0" class="fas round m-r-1" :text="visibilityIcon" @tap="changeVisibility"></Button>
+            <Button col="1" class="fas round m-x-0" :text="businessIcon" @tap="changeBusiness"></Button>
+            <Button
+                col="3"
+                class="fab"
+                :class="toot ? 'round' : '-outline'"
+                text.decode="&#xf4f6;"
+                @tap="changeToot"
+            />
+          </GridLayout>
           <DockLayout>
-            <Button text="checkin" @tap="runCheckin" dock="right"/>
+            <Button text="Cancel" class="-outline cancel" dock="left" @tap="$modal.close(null)"/>
+            <Button text="checkin" class="round" @tap="runCheckin" dock="right"/>
           </DockLayout>
         </StackLayout>
     </Page>
@@ -23,7 +35,7 @@
 
 <script lang="ts">
 import Vue from "nativescript-vue";
-import {API} from "~/api.service";
+import {API, Business, Visibility} from "~/api.service";
 
 export default Vue.extend({
   name: "CheckinSheetComponent",
@@ -49,15 +61,46 @@ export default Vue.extend({
   },
   data() {
     return {
-      statusText: ""
+      statusText: "",
+      showPicker: false,
+      visibility: <Visibility> Visibility.Public,
+      business: <Business> Business.Private,
+      toot: false,
     }
   },
   computed: {
     actionBarTitle() {
       return this.$props.lineName + " ➜ " + this.$props.destination.name;
+    },
+    visibilityIcon() {
+      let icons = ["\uf0ac", "\uf3c1", "\uf500", "\uf023", "\uf4fc"];
+
+      return icons[this.visibility.toFixed()];
+    },
+    businessIcon() {
+      let icons = ["\uf183", "\uf0b1", "\uf1ad"];
+
+      return icons[this.business.toFixed()];
     }
   },
   methods: {
+    changeVisibility() {
+      if (this.visibility === Visibility.Authenticated) {
+        this.visibility = 0;
+        return;
+      }
+      this.visibility++;
+    },
+    changeBusiness() {
+      if (this.business === 2) {
+        this.business = 0;
+        return;
+      }
+      this.business++;
+    },
+    changeToot() {
+      this.toot = !this.toot;
+    },
     onTextViewLoaded(args: any) {
       args.object.focus();
     },
@@ -72,7 +115,11 @@ export default Vue.extend({
           this.$props.departure,
           this.$props.arrival,
           false,
-          this.statusText
+          this.statusText,
+          this.business,
+          this.visibility,
+          null,
+          this.toot
       ).then((response) => {
         console.log(response);
         const status = response.data.status;
@@ -96,12 +143,31 @@ export default Vue.extend({
 
 // Custom styles
 .fas {
-  @include colorize($color: accent);
+//  @include colorize($color: accent);
 }
 
 .info {
   font-size: 20;
   horizontal-align: center;
   vertical-align: center;
+}
+
+.round {
+  android-elevation: 0;
+  background-color: $btn-color-secondary;
+  border-radius: 50%;
+  text-align: center;
+  border: 1px solid $btn-color-secondary;
+}
+
+.cancel {
+  border-color: $complementary !important;
+}
+
+Button.-outline {
+  android-elevation: 0;
+  background-color: transparent;
+  border-radius: 50%;
+  text-align: center;
 }
 </style>

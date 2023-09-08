@@ -11,7 +11,11 @@ export default Vue.extend({
       onTextchanged: <any> null
     }
   },
+  props: {
+    input: {type: String, default: ""}
+  },
   mounted() {
+    this.searchPhrase = this.$props.input;
     this.onTextchanged = debounce(this.fetchStations, 200);
   },
   destroyed() {

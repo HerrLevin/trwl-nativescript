@@ -15,26 +15,12 @@ export default Vue.extend({
     return {
       inputText: '',
       station: null,
-      departures: [
-        {
-          when: '2023-01-06T13:49:00+01:00',
-          direction: 'Zürich HB',
-          line: {
-            name: 'EC 60'
-          }
-        }, {
-          when: '2023-01-06T13:50:00+01:00',
-          direction: 'Karlsruhe Hbf',
-          line: {
-            name: 'ICE 123'
-          }
-        },
-      ]
+      departures: []
     }
   },
   methods: {
     textFieldTap() {
-      this.$showModal(StationSheetcomponent).then(this.stationModalCallback);
+      this.$showModal(StationSheetcomponent, {props: {input: this.inputText}}).then(this.stationModalCallback);
     },
     stationModalCallback(args: string) {
       console.info(args);
@@ -94,7 +80,7 @@ export default Vue.extend({
 </script>
 
 <template>
-  <Page>
+  <Page @loaded="textFieldTap">
     <GridLayout rows="60, *">
       <TextField
           row="0"

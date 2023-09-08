@@ -1,6 +1,5 @@
 <script lang="ts">
 import Vue from 'vue'
-import Page2Page from "~/components/Page2Page.vue";
 import {API, Status} from "~/api.service";
 
 export default Vue.extend({

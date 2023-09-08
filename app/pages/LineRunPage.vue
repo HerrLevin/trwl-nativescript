@@ -29,7 +29,7 @@ export default Vue.extend({
               start: this.start,
               destination: stop,
               departure: this.$props.train.plannedWhen,
-              arrival: stop.arrival
+              arrival: stop.arrivalPlanned
             }
           }
       );
