@@ -2,6 +2,9 @@ import Vue from 'nativescript-vue'
 import MainView from "~/components/MainView.vue";
 import RadListView from 'nativescript-ui-listview/vue'
 import DateTimePicker from '@nativescript/datetimepicker/vue'
+import {configureOAuthProviders} from "~/auth-service";
+
+configureOAuthProviders();
 
 Vue.use(RadListView);
 Vue.use(DateTimePicker);

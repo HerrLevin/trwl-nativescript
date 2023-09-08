@@ -10,6 +10,7 @@
     "axios": "^1.5.0",
     "dayjs": "^1.11.9",
     "lodash-es": "^4.17.21",
+    "nativescript-oauth2": "^3.0.10",
     "nativescript-ui-listview": "^15.2.3",
     "nativescript-vue": "~2.9.3"
   },

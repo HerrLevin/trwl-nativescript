@@ -12,6 +12,8 @@
         </FormattedString>
       </Label>
       <TextField v-model="keyInput"/>
+      <Button text="oauth login" @tap="onLoginTap" />
+      <Button text="oauth logout" @tap="onLogoutTap" />
       <Button v-if="!apiKey" text="Get your API token" @tap="getToken"/>
       <Button v-if="!apiKey" text="Login" @tap="setKey"/>
       <Button v-else text="Logout" @tap="logout"/>
@@ -26,6 +28,7 @@ import {logout} from "~/api.service";
 import { Utils } from "@nativescript/core";
 const File = require("@nativescript/core/file-system");
 const appSettings = require("@nativescript/core/application-settings");
+import { tnsOauthLogin, tnsOauthLogout } from "~/auth-service";
 
 export default Vue.extend({
   data() {
@@ -42,6 +45,21 @@ export default Vue.extend({
     }
   },
   methods: {
+    onLoginTap() {
+      tnsOauthLogin("myCustomProvider", (tokenResult, error) => {
+        if (error) {
+          console.error("back to main page with error: ");
+          console.error(error);
+        } else {
+          console.log("WTF");
+          this.keyInput = tokenResult.accessToken;
+          this.setKey();
+        }
+      });
+    },
+    onLogoutTap() {
+      tnsOauthLogout();
+    },
     getToken() {
       Utils.openUrl("https://traewelling.de/settings/security/api-tokens");
     },
