@@ -143,7 +143,7 @@ export type Status = {
   event: Event | null
 };
 
-export type Train= {
+export type Train = {
   trip: number,
   hafasId: string,
   category: category,

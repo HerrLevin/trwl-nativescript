@@ -1,6 +1,6 @@
 <script lang="ts">
 import Vue from 'vue'
-import {getLineRun} from "~/api.service";
+import {getLineRun, TrainStopover} from "~/api.service";
 import CheckinSheetcomponent from "~/components/CheckinSheetcomponent.vue";
 const demo = require("~/demoData/trip.json");
 
@@ -18,7 +18,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    showCheckInSheet: function (stop: object) {
+    showCheckInSheet: function (stop: TrainStopover) {
       this.$showModal(
           CheckinSheetcomponent,
           {
