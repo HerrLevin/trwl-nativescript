@@ -15,7 +15,7 @@ export default Vue.extend({
       getDashboard().then((result) => {
         this.items = result.data;
         this.$refs.dashboardListView.refresh();
-      });
+      }).catch(console.error);
     }
   }
 })

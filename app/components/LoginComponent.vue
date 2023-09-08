@@ -1,5 +1,5 @@
 <template>
-  <Page>
+  <Page @loaded="getKey">
     <ActionBar>
       <Label text="Login"/>
     </ActionBar>
@@ -24,15 +24,16 @@ import Vue from "nativescript-vue";
 import {isEmpty} from "lodash-es";
 import {logout} from "~/api.service";
 import { Utils } from "@nativescript/core";
-
-
+const File = require("@nativescript/core/file-system");
 const appSettings = require("@nativescript/core/application-settings");
 
 export default Vue.extend({
   data() {
     return {
       apiKey: false,
-      keyInput: ""
+      keyInput: "",
+      file: <File.File|null> null,
+      userdata: <any> {}
     }
   },
   computed: {
@@ -45,19 +46,44 @@ export default Vue.extend({
       Utils.openUrl("https://traewelling.de/settings/security/api-tokens");
     },
     logout() {
+      this.readFile();
       logout().then(() => {
         this.keyInput = "";
         this.setKey();
+        this.writeFile({});
         this.apiKey = false;
       })
+      this.apiKey = false;
     },
     getKey() {
+      this.openFile();
+      this.readFile();
       this.apiKey = isEmpty(appSettings.getString("API"));
     },
     setKey() {
-      this.apiKey = true;
-      appSettings.setString("API", this.keyInput);
-      appSettings.flush();
+      console.log("setting...");
+      this.writeFile({token: this.keyInput}).then(() => {
+        this.apiKey = true;
+        appSettings.setString("API", this.keyInput);
+        console.log("set!");
+      });
+    },
+    openFile() {
+      this.file = File.knownFolders.documents().getFile("userAuth.json");
+    },
+    readFile() {
+      this.file.readText().then((content: string) => {
+        if (!isEmpty(content)) {
+          this.userdata = JSON.parse(content);
+          appSettings.setString("API", this.userdata.token);
+          this.keyInput = this.userdata.token;
+          this.apiKey = !isEmpty(this.keyInput);
+          console.log(this.userdata);
+        }
+      }).catch(console.error);
+    },
+    writeFile(data: object) {
+      return this.file.writeText(JSON.stringify(data));
     }
   }
 });

@@ -3,6 +3,7 @@ import Vue from 'vue'
 import {getLineRun, TrainStopover} from "~/api.service";
 import CheckinSheetcomponent from "~/components/CheckinSheetcomponent.vue";
 const demo = require("~/demoData/trip.json");
+import dayjs from 'dayjs';
 
 export default Vue.extend({
   name: "LineRunPage",
@@ -34,8 +35,8 @@ export default Vue.extend({
       );
     },
     convertTime(time: string) {
-      const newTime = new Date(Date.parse(time));
-      return newTime.toTimeString()
+      const newTime = dayjs(time);
+      return newTime.format("HH:mm")
     },
     loadLineRun() {
       console.info("load line run");
@@ -64,7 +65,7 @@ export default Vue.extend({
     <ActionBar :title="`${$props.train.line.name} ➜ ${$props.train.direction}`"/>
     <ListView for="stop in stopovers" class="list-group" ref="listView">
       <v-template>
-        <GridLayout columns="100, *, 40" @tap="showCheckInSheet(stop)">
+        <GridLayout columns="100, *, 45" @tap="showCheckInSheet(stop)">
           <Label col="0"></Label>
           <Label col="1" :text="stop.name" class="list-group-item"/>
           <Label col="2" :text="convertTime(stop.arrival)"/>
