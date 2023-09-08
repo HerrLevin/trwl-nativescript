@@ -81,10 +81,10 @@ export class API {
     return getDashboard(page, global);
   }
 
-  getDepartures(stationName: string): Promise<any> {
+  getDepartures(stationName: string, when: string, travelType: string=""): Promise<any> {
     console.info("getDepartures");
     stationName = stationName.replace("/", "%20");
-    return fetchAPI(`/trains/station/${encodeURI(stationName)}/departures`);
+    return fetchAPI(`/trains/station/${encodeURI(stationName)}/departures?when=${when}&travelType=${travelType}`);
   }
 
   getLineRun(hafasTripId: string, lineName: string, startId: number) {

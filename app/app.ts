@@ -1,8 +1,10 @@
 import Vue from 'nativescript-vue'
 import MainView from "~/components/MainView.vue";
 import RadListView from 'nativescript-ui-listview/vue'
+import DateTimePicker from '@nativescript/datetimepicker/vue'
 
-Vue.use(RadListView)
+Vue.use(RadListView);
+Vue.use(DateTimePicker);
 
 declare let __DEV__: boolean;
 
