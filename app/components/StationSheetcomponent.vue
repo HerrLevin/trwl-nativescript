@@ -2,6 +2,7 @@
 import Vue from "nativescript-vue";
 import debounce from 'lodash-es/debounce'
 import {API, ShortTrainStation} from "~/api.service";
+import {isEmpty} from "lodash-es";
 
 export default Vue.extend({
   data() {
@@ -26,6 +27,9 @@ export default Vue.extend({
   methods: {
     fetchStations() {
       let api = new API(this);
+      if (isEmpty(this.searchPhrase)) {
+        return;
+      }
       api.autocomplete(this.searchPhrase).then((result) => {
         this.stations = result.data;
         this.$refs.list.refresh();

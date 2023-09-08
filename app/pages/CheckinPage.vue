@@ -14,7 +14,7 @@ export default Vue.extend({
   name: "CheckinPage",
   data() {
     return {
-      inputText: '',
+      inputText: <string> '',
       station: null,
       when: dayjs().subtract(5, "minutes"),
       departures: []
@@ -28,7 +28,7 @@ export default Vue.extend({
       this.when = dayjs(args.value);
       this.getDeparturesFrom();
     },
-    textFieldTap(condition: any = null) {
+    textFieldTap(condition: String = "") {
       if (isEmpty(condition)) {
         this.$showModal(StationSheetcomponent, {props: {input: this.inputText}}).then(this.stationModalCallback);
       }
@@ -103,7 +103,7 @@ export default Vue.extend({
           row="0"
           hint="Stationsname oder DS100"
           v-model="inputText"
-          @tap="textFieldTap"
+          @tap="textFieldTap('')"
       />
       <GridLayout row="1" columns="auto, *, auto" width="100%">
         <Button dock="left" class="fas" col="0" text.decode="&#xf0a8;" @tap="prev"/>
