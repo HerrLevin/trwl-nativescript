@@ -3,7 +3,7 @@ import Vue from 'vue'
 import StationSheetcomponent from "~/components/StationSheetcomponent.vue";
 import LineRunPage from "~/pages/LineRunPage.vue";
 const appSettings = require("@nativescript/core/application-settings");
-import {getDepartures} from "~/api.service";
+import {API} from "~/api.service";
 const demo = require("~/demoData/departures.json");
 
 export default Vue.extend({
@@ -53,7 +53,8 @@ export default Vue.extend({
       this.departures = [];
       this.$refs.departuresListView.refresh();
 
-      getDepartures(this.inputText).then((response) => {
+      let api = new API(this);
+      api.getDepartures(this.inputText).then((response) => {
         console.info("done");
         this.inputText = response.meta.station.name;
         this.station = response.meta.station;

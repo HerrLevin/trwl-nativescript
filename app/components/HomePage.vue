@@ -1,7 +1,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Page2Page from "~/components/Page2Page.vue";
-import {getDashboard, Status} from "~/api.service";
+import {API, Status} from "~/api.service";
 
 export default Vue.extend({
   name: "HomePage.vue",
@@ -12,7 +12,8 @@ export default Vue.extend({
   },
   methods: {
     fetchDashboard() {
-      getDashboard().then((result) => {
+      let api = new API(this);
+      api.getDashboard().then((result) => {
         this.items = result.data;
         this.$refs.dashboardListView.refresh();
       }).catch(console.error);

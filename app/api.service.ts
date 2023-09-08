@@ -1,4 +1,5 @@
 import {isEmpty} from "lodash-es";
+import LoginComponent from "~/components/LoginComponent.vue";
 
 let baseURL: string = "https://traewelling.de/api/v1";
 const appSettings = require("@nativescript/core/application-settings");
@@ -61,48 +62,67 @@ function fetchAPI(url: string, body: string | object | null = null, method: stri
     });
 }
 
+export class API {
+  private _this: any;
+  private _apiKey: string = "";
+  constructor(outerThis: any) {
+    this._this = outerThis;
+    this.checkAuth();
+  }
 
-export function getDepartures(stationName: string): Promise<any> {
-  console.info("getDepartures");
-  return fetchAPI(`/trains/station/${encodeURI(stationName)}/departures`);
-}
+  checkAuth() {
+    const apiKey = appSettings.getString("API");
+    if (isEmpty(apiKey)) {
+      this._this.$showModal(LoginComponent).then((key: string) => {this._apiKey = key});
+    }
+  }
 
-export function getLineRun(hafasTripId: string, lineName: string, startId: number) {
-  console.info("getLineRun");
-  return fetchAPI(`/trains/trip?hafasTripId=${encodeURI(hafasTripId)}&lineName=${encodeURI(lineName)}&start=${startId}`);
+  getDashboard(page: number = 1, global: boolean = false) {
+    return getDashboard(page, global);
+  }
+
+  getDepartures(stationName: string): Promise<any> {
+    console.info("getDepartures");
+    return fetchAPI(`/trains/station/${encodeURI(stationName)}/departures`);
+  }
+
+  getLineRun(hafasTripId: string, lineName: string, startId: number) {
+    console.info("getLineRun");
+    return fetchAPI(`/trains/trip?hafasTripId=${encodeURI(hafasTripId)}&lineName=${encodeURI(lineName)}&start=${startId}`);
+  }
+
+  autocomplete(query: string): Promise<AutoCompleteResponse> {
+    query = query.replace("/", " ");
+
+    return fetchAPI(`/trains/station/autocomplete/${encodeURI(query)}`);
+  }
+
+  checkin(
+    tripId: string,
+    lineName: string,
+    start: number,
+    destination: number,
+    departure: string,
+    arrival: string,
+    force: boolean,
+    body: string | null,
+    business: number = 0,
+    visibility: number = 0,
+    eventId: number | null = null,
+    toot: boolean = false
+  ) {
+    console.info("checkin");
+
+    return fetchAPI(
+      "/trains/checkin",
+      {tripId, lineName, start, destination, departure, arrival, force, body, business, visibility, eventId, toot},
+      "POST"
+    );
+  }
 }
 
 export function logout() {
   return fetchAPI("/auth/logout", null, "POST");
-}
-
-export function checkin(
-  tripId: string,
-  lineName: string,
-  start: number,
-  destination: number,
-  departure: string,
-  arrival: string,
-  force: boolean,
-  body: string | null,
-  business: number = 0,
-  visibility: number = 0,
-  eventId: number | null = null,
-  toot: boolean = false
-) {
-  console.info("checkin");
-
-  return fetchAPI(
-    "/trains/checkin",
-    {tripId, lineName, start, destination, departure, arrival, force, body, business, visibility, eventId, toot},
-    "POST"
-  );
-}
-
-export function autocomplete(query: string): Promise<AutoCompleteResponse> {
-  query = query.replace("/", " ");
-
-  return fetchAPI(`/trains/station/autocomplete/${encodeURI(query)}`);
 }
 
 export function getDashboard(page: number = 1, global: boolean = false): Promise<DashboardResponse> {

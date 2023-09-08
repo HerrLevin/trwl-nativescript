@@ -1,6 +1,6 @@
 <script lang="ts">
 import Vue from 'vue'
-import {getLineRun, TrainStopover} from "~/api.service";
+import {API, getLineRun, TrainStopover} from "~/api.service";
 import CheckinSheetcomponent from "~/components/CheckinSheetcomponent.vue";
 const demo = require("~/demoData/trip.json");
 import dayjs from 'dayjs';
@@ -40,7 +40,8 @@ export default Vue.extend({
     },
     loadLineRun() {
       console.info("load line run");
-      getLineRun(this.$props.train.tripId, this.$props.train.line.name, this.$props.train.stop.id).then((response) => {
+      let api = new API(this);
+      api.getLineRun(this.$props.train.tripId, this.$props.train.line.name, this.$props.train.stop.id).then((response) => {
 
         let stationFound: boolean = false;
         this.stopovers = response.data.stopovers.filter((stop: any) => {

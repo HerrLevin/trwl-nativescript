@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import Vue from "nativescript-vue";
-import {checkin} from "~/api.service";
+import {API} from "~/api.service";
 
 export default Vue.extend({
   name: "CheckinSheetComponent",
@@ -62,7 +62,9 @@ export default Vue.extend({
       args.object.focus();
     },
     runCheckin() {
-      checkin(
+      let api = new API(this);
+
+      api.checkin(
           this.$props.tripId,
           this.$props.lineName,
           this.$props.start.id,

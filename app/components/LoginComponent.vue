@@ -58,7 +58,7 @@ export default Vue.extend({
     getKey() {
       this.openFile();
       this.readFile();
-      this.apiKey = isEmpty(appSettings.getString("API"));
+      this.apiKey = !isEmpty(appSettings.getString("API"));
     },
     setKey() {
       console.log("setting...");
@@ -77,6 +77,9 @@ export default Vue.extend({
           this.userdata = JSON.parse(content);
           appSettings.setString("API", this.userdata.token);
           this.keyInput = this.userdata.token;
+          if (this.userdata.token) {
+            this.$modal?.close();
+          }
           this.apiKey = !isEmpty(this.keyInput);
           console.log(this.userdata);
         }
