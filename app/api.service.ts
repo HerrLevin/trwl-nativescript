@@ -1,9 +1,16 @@
+import {isEmpty} from "lodash-es";
 
-const apiKey: string = "nothing";
-const baseURL: string = "https://traewelling.de/api/v1";
+let baseURL: string = "https://traewelling.de/api/v1";
+const appSettings = require("@nativescript/core/application-settings");
 
 //Idk bout that. Stole it from https://stackoverflow.com/questions/54074380/how-to-wrap-javascript-fetch-in-a-function-unhandled-promise-rejection
 function fetchAPI(url: string, body: string | object | null = null, method: string = 'GET') {
+  const apiKey = appSettings.getString("API");
+
+  if (isEmpty(apiKey)) {
+    return Promise.reject(new Error("No API key given!"));
+  }
+
   let init: RequestInit = {
     headers: {
       'Authorization': `Bearer ${apiKey}`,
@@ -63,6 +70,10 @@ export function getDepartures(stationName: string): Promise<any> {
 export function getLineRun(hafasTripId: string, lineName: string, startId: number) {
   console.info("getLineRun");
   return fetchAPI(`/trains/trip?hafasTripId=${encodeURI(hafasTripId)}&lineName=${encodeURI(lineName)}&start=${startId}`);
+}
+
+export function logout() {
+  return fetchAPI("/auth/logout", null, "POST");
 }
 
 export function checkin(

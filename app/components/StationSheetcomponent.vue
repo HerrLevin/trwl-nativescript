@@ -66,7 +66,7 @@ export default Vue.extend({
 </template>
 
 <style scoped lang="scss">
-@import '@nativescript/theme/scss/variables/blue';
+@import '@nativescript/theme/scss/variables/ruby';
 
 // Custom styles
 .fas {
