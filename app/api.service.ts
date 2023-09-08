@@ -87,3 +87,157 @@ export function checkin(
     "POST"
   );
 }
+
+export function autocomplete(query: string): Promise<AutoCompleteResponse> {
+  query = query.replace("/", " ");
+
+  return fetchAPI(`/trains/station/autocomplete/${encodeURI(query)}`);
+}
+
+export function getDashboard(page: number = 1, global: boolean = false): Promise<DashboardResponse> {
+  let url: string = global ? "/dashboard/global" : "/dashboard";
+  url = `${url}?page=${page}`;
+  return fetchAPI(url);
+}
+
+
+/**
+ * Types follow here.
+ */
+
+export type DashboardResponse = {
+  data: Status[],
+  links: Links,
+  meta: PaginationMeta
+}
+
+export type PaginationMeta = {
+  current_page: number,
+  from: number,
+  path: string,
+  per_page: number,
+  to: string
+};
+
+export type Links = {
+  first: string,
+  last: string,
+  prev: string | null,
+  next: string | null,
+};
+
+export type Status = {
+  id: number,
+  body: string | null,
+  type: string,
+  user: number,
+  username: string,
+  preventIndex: boolean,
+  business: Business,
+  visibility: Visibility,
+  likes: number,
+  liked: boolean,
+  isLikable: boolean,
+  createdAt: string,
+  train: Train,
+  event: Event | null
+};
+
+export type Train= {
+  trip: number,
+  hafasId: string,
+  category: category,
+  number: string,
+  journeyNumber: number,
+  lineName: string,
+  distance: number,
+  points: number,
+  duration: number,
+  speed: number,
+  origin: TrainStopover,
+  destination: TrainStopover,
+  operator: Operator
+}
+
+export type TrainStopover = {
+  id: number,
+  name: string,
+  rilIdentifier: string,
+  evaIdentifier: string,
+  arrival: string | null,
+  arrivalPlanned: string | null,
+  arrivalReal: string | null,
+  arrivalPlatformPlanned: string | null,
+  arrivalPlatformReal: string | null,
+  departure: string | null,
+  departurePlanned: string | null,
+  departureReal: string | null,
+  departurePlatformPlanned: string | null,
+  departurePlatformReal: string | null,
+  platform: string | null,
+  isArrivalDelayed: boolean,
+  isDepartureDelayed: boolean,
+  cancelled: boolean
+}
+
+export type Operator = {
+  identifier: string,
+  name: string
+}
+
+export type Event = {
+  id: number,
+  name: string,
+  slug: string,
+  host: string,
+  url: string,
+  begin: string,
+  end: string,
+  station: Station | null
+}
+
+export type Station = {
+  id: number,
+  name: string,
+  latitude: number,
+  longitude: number,
+  ibnr: number,
+  rilIdentifier: string | null
+}
+
+enum category {
+  nationalExpress = "nationalExpress",
+  national = "national",
+  regionalExp = "regionalExp",
+  regional = "regional",
+  suburban = "suburban",
+  bus = "bus",
+  ferry = "ferry",
+  subway = "subway",
+  tram = "tram",
+  taxi = "taxi"
+}
+
+enum Business {
+  Private = 0,
+  Business = 1,
+  Commute = 2,
+}
+
+enum Visibility {
+  Public = 0,
+  Unlisted = 1,
+  Followers = 2,
+  Private = 3,
+  Authenticated = 4
+}
+
+export type ShortTrainStation = {
+  ibnr: number,
+  rilIdentifier: string | null,
+  name: string
+};
+
+interface AutoCompleteResponse {
+  data: ShortTrainStation[]
+}

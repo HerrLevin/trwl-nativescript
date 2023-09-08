@@ -1,12 +1,12 @@
 <script lang="ts">
 import Vue from "nativescript-vue";
 import debounce from 'lodash-es/debounce'
-import {autocomplete} from "~/api.service";
+import {autocomplete, ShortTrainStation} from "~/api.service";
 
 export default Vue.extend({
   data() {
     return {
-      stations: [],
+      stations: <ShortTrainStation[]>[],
       searchPhrase: '',
       onTextchanged: <any> null
     }
@@ -50,12 +50,12 @@ export default Vue.extend({
       <GridLayout rows="auto, *">
         <SearchBar hint="Search hint" row="0" v-model="searchPhrase" @textChange="onTextchanged"
                    @loaded="onSearchBarLoaded"/>
-        <ListView for="item in stations" row="1" ref="list" class="list-group">
+        <ListView for="station in stations" row="1" ref="list" class="list-group">
           <v-template>
             <GridLayout class="list-group-item">
               <Label
-                  :text="`${item.name} ${item.rilIdentifier ? '(' + item.rilIdentifier + ')' : ''}`"
-                  @tap="onTapListItem(item.name)"
+                  :text="`${station.name} ${station.rilIdentifier ? '(' + station.rilIdentifier + ')' : ''}`"
+                  @tap="onTapListItem(station.name)"
               />
             </GridLayout>
           </v-template>

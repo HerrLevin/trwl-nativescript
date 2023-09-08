@@ -1,33 +1,33 @@
 <script lang="ts">
 import Vue from 'vue'
 import Page2Page from "~/components/Page2Page.vue";
+import {getDashboard, Status} from "~/api.service";
 
 export default Vue.extend({
   name: "HomePage.vue",
   data() {
     return {
-      items: [{
-        name: "Gertrud123",
-        origin: "Karlsruhe Hbf",
-        destination: "Basel Bad Bf."
-      }, {
-        name: "Gertrud123",
-        origin: "Berlin Hbf (tief)",
-        destination: "Hamburg Hbf"
-      }
-      ]
+      items: <Status[]> []
+    }
+  },
+  methods: {
+    fetchDashboard() {
+      getDashboard().then((result) => {
+        this.items = result.data;
+        this.$refs.dashboardListView.refresh();
+      });
     }
   }
 })
 </script>
 
 <template>
-  <Page>
-    <RadListView for="item in items">
+  <Page @loaded="fetchDashboard">
+    <RadListView for="item in items" ref="dashboardListView">
       <v-template>
         <StackLayout class="cars-list__item">
           <GridLayout class="cars-list__item-content" columns="*, *" rows="*, *, *">
-            <Label :text="'@' + item.name" class="cars-list__item-name font-weight-bold"/>
+            <Label :text="'@' + item.username" class="cars-list__item-name font-weight-bold"/>
             <Label class="m-r-5" col="1" horizontalAlignment="right">
               <FormattedString>
                 <Span text.decode="&hearts;"/>
@@ -41,13 +41,13 @@ export default Vue.extend({
               <Label class="p-b-10">
                 <FormattedString ios.fontFamily="system">
                   <Span class="fas cars-list__item-icon" text.decode="&#xf041;    "></Span>
-                  <Span :text="item.origin"/>
+                  <Span :text="item.train.origin.name"/>
                 </FormattedString>
               </Label>
               <Label class="p-b-10">
                 <FormattedString ios.fontFamily="system">
                   <Span class="fas cars-list__item-icon" text.decode="&#xf11e;    "/>
-                  <Span :text="item.destination"/>
+                  <Span :text="item.train.destination.name"/>
                 </FormattedString>
               </Label>
             </StackLayout>
