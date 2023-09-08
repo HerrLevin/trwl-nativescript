@@ -14,7 +14,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      stopovers: demo.data.stopovers,
+      stopovers: <TrainStopover[]> [],
       start: null,
     }
   },
@@ -34,9 +34,24 @@ export default Vue.extend({
           }
       );
     },
-    convertTime(time: string) {
+    convertTime(time: string | null) {
       const newTime = dayjs(time);
       return newTime.format("HH:mm")
+    },
+    delay(stopover: TrainStopover) {
+      let planned;
+      let real;
+      if (stopover.arrival && stopover.arrivalReal) {
+        planned = dayjs(stopover.arrivalPlanned);
+        real = dayjs(stopover.arrivalReal);
+      } else if (stopover.departure && stopover.departureReal) {
+        planned = dayjs(stopover.departurePlanned);
+        real = dayjs(stopover.departureReal);
+      } else {
+        return 0;
+      }
+
+      return Math.round(real.diff(planned) / 60000);
     },
     loadLineRun() {
       console.info("load line run");
@@ -66,10 +81,14 @@ export default Vue.extend({
     <ActionBar :title="`${$props.train.line.name} ➜ ${$props.train.direction}`"/>
     <ListView for="stop in stopovers" class="list-group" ref="listView">
       <v-template>
-        <GridLayout columns="100, *, 45" @tap="showCheckInSheet(stop)">
-          <Label col="0"></Label>
-          <Label col="1" :text="stop.name" class="list-group-item"/>
-          <Label col="2" :text="convertTime(stop.arrival)"/>
+        <GridLayout columns="*, 45, 45" @tap="showCheckInSheet(stop)">
+          <Label col="0" :text="stop.name" class="list-group-item"/>
+          <Label col="1" :text="convertTime(stop.arrival ? stop.arrival : stop.departure)"/>
+          <Label
+              col="2"
+              :text="`+${delay(stop)}`"
+              :class="(delay(stop) < 2) ? 'green' : (delay(stop) < 5) ? 'yellow' : 'red'"
+          />
         </GridLayout>
       </v-template>
     </ListView>
@@ -79,4 +98,15 @@ export default Vue.extend({
 <style scoped lang="scss">
 @import '@nativescript/theme/scss/variables/ruby';
 
+.green {
+  color: forestgreen;
+}
+
+.yellow {
+  color: orange;
+}
+
+.red {
+  color: orangered;
+}
 </style>

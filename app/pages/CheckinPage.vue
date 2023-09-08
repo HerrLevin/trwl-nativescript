@@ -2,8 +2,11 @@
 import Vue from 'vue'
 import StationSheetcomponent from "~/components/StationSheetcomponent.vue";
 import LineRunPage from "~/pages/LineRunPage.vue";
+
 const appSettings = require("@nativescript/core/application-settings");
-import {API} from "~/api.service";
+import {API, TrainStopover} from "~/api.service";
+import dayjs from "dayjs";
+
 const demo = require("~/demoData/departures.json");
 
 export default Vue.extend({
@@ -19,7 +22,7 @@ export default Vue.extend({
           line: {
             name: 'EC 60'
           }
-        },{
+        }, {
           when: '2023-01-06T13:50:00+01:00',
           direction: 'Karlsruhe Hbf',
           line: {
@@ -41,13 +44,29 @@ export default Vue.extend({
     tapListItem(train: any) {
       this.$navigateTo(LineRunPage, {
         frame: 'checkin',
-        props: { train, start: this.station}
+        props: {train, start: this.station}
       });
     },
     renderDeparture(timestring: string): string {
       let date = Date.parse(timestring);
       let time = new Date(date);
       return time.toLocaleTimeString()
+    },
+    convertTime(time: string | null) {
+      const newTime = dayjs(time);
+      return newTime.format("HH:mm")
+    },
+    delay(stopover: object) {
+      let planned;
+      let real;
+      if (stopover.when && stopover.plannedWhen) {
+        planned = dayjs(stopover.plannedWhen);
+        real = dayjs(stopover.when);
+      } else {
+        return 0;
+      }
+
+      return Math.round(real.diff(planned) / 60000);
     },
     getDeparturesFrom() {
       this.departures = [];
@@ -87,10 +106,15 @@ export default Vue.extend({
       />
       <ListView row="1" for="departure in departures" class="list-group" ref="departuresListView">
         <v-template>
-          <GridLayout columns="100, *, 60" @tap="tapListItem(departure)" class="list-group-item">
-            <Label col="0" :text="departure.line.name" />
+          <GridLayout columns="100, *, 45, 45" @tap="tapListItem(departure)" class="list-group-item">
+            <Label col="0" :text="departure.line.name"/>
             <Label col="1" :text="departure.direction"/>
-            <Label col="2" :text="renderDeparture(departure.when)" />
+            <Label col="2" :text="convertTime(departure.when)"/>
+            <Label
+                col="3"
+                :text="`+${delay(departure)}`"
+                :class="(delay(departure) < 2) ? 'green' : (delay(departure) < 5) ? 'yellow' : 'red'"
+            />
           </GridLayout>
         </v-template>
       </ListView>
@@ -101,4 +125,15 @@ export default Vue.extend({
 <style scoped lang="scss">
 @import '@nativescript/theme/scss/variables/ruby';
 
+.green {
+  color: forestgreen;
+}
+
+.yellow {
+  color: orange;
+}
+
+.red {
+  color: orangered;
+}
 </style>

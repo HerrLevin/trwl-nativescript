@@ -27,7 +27,7 @@ export default Vue.extend({
     <RadListView for="item in items" ref="dashboardListView">
       <v-template>
         <StackLayout class="cars-list__item">
-          <GridLayout class="cars-list__item-content" columns="*, *" rows="*, *, *">
+          <GridLayout class="cars-list__item-content" columns="*, 40" rows="*, *, *">
             <Label :text="'@' + item.username" class="cars-list__item-name font-weight-bold"/>
             <Label class="m-r-5" col="1" horizontalAlignment="right">
               <FormattedString>
@@ -38,7 +38,7 @@ export default Vue.extend({
 
             <Label class="hr m-y-5" colSpan="2" row="1"/>
 
-            <StackLayout row="2" verticalAlignment="center">
+            <StackLayout row="2" colSpan="2" verticalAlignment="center">
               <Label class="p-b-10">
                 <FormattedString ios.fontFamily="system">
                   <Span class="fas cars-list__item-icon" text.decode="&#xf041;    "></Span>

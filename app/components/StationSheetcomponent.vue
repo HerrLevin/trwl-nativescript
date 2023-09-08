@@ -53,11 +53,17 @@ export default Vue.extend({
                    @loaded="onSearchBarLoaded"/>
         <ListView for="station in stations" row="1" ref="list" class="list-group">
           <v-template>
-            <GridLayout class="list-group-item">
+            <GridLayout class="list-group-item" columns="*, 40">
               <Label
+                  col="0"
                   :text="`${station.name} ${station.rilIdentifier ? '(' + station.rilIdentifier + ')' : ''}`"
                   @tap="onTapListItem(station.name)"
               />
+              <Label col="1">
+                <FormattedString>
+                  <Span class="far" text.decode="&#xf005; "/>
+                </FormattedString>
+              </Label>
             </GridLayout>
           </v-template>
         </ListView>
