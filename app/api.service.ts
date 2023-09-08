@@ -2,7 +2,7 @@ import {isEmpty} from "lodash-es";
 import LoginComponent from "~/components/LoginComponent.vue";
 
 //let baseURL: string = "https://traewelling.de/api/v1";
-let baseURL: string = "http://127.0.0.1:8000/api/v1";
+let baseURL: string = (process.env.TRWL_HOST ? process.env.TRWL_HOST : "") + "/api/v1";
 const appSettings = require("@nativescript/core/application-settings");
 
 //Idk bout that. Stole it from https://stackoverflow.com/questions/54074380/how-to-wrap-javascript-fetch-in-a-function-unhandled-promise-rejection

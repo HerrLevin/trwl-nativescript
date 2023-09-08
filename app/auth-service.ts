@@ -1,12 +1,6 @@
-import {
-  TnsOAuthClient,
-  configureTnsOAuth,
-  ITnsOAuthTokenResult, TnsOAuthClientLoginBlock
-} from "nativescript-oauth2";
-import {
-  TnsOaProvider
-} from "nativescript-oauth2/providers";
-import { TnsOaProviderMyCustomProvider, TnsOaMyCustomProviderOptions } from "./my-oauth-provider";
+import {configureTnsOAuth, TnsOAuthClient, TnsOAuthClientLoginBlock} from "nativescript-oauth2";
+import {TnsOaProvider} from "nativescript-oauth2/providers";
+import {TnsOaMyCustomProviderOptions, TnsOaProviderMyCustomProvider} from "./my-oauth-provider";
 
 let client: TnsOAuthClient;
 
@@ -16,11 +10,11 @@ export function configureOAuthProviders() {
 }
 
 function configureOAuthProviderMyCustomProvider(): TnsOaProvider {
-  const facebookProviderOptions: TnsOaMyCustomProviderOptions = {
+  const traewellingProviderOptions: TnsOaMyCustomProviderOptions = {
     openIdSupport: "oid-none",
-    clientId: "2",
+    clientId: process.env.TRWL_API_CLIENT_ID ? process.env.TRWL_API_CLIENT_ID : "",
     clientSecret: "",
-    redirectUri: "http://example.com/connect/login_succes.html",
+    redirectUri: process.env.TRWL_CALLBACK ? process.env.TRWL_CALLBACK : "",
     scopes: [
       "read-statuses","read-statuses", "read-notifications", "read-statistics", "read-search", "write-statuses",
       "write-likes", "write-notifications", "write-exports", "write-follows", "write-followers", "write-blocks",
@@ -30,24 +24,13 @@ function configureOAuthProviderMyCustomProvider(): TnsOaProvider {
       "extra-delete"
     ]
   };
-  const facebookProvider = new TnsOaProviderMyCustomProvider(facebookProviderOptions);
-  return facebookProvider;
+  return new TnsOaProviderMyCustomProvider(traewellingProviderOptions);
 }
 
 export function tnsOauthLogin(providerType: string, completion?: TnsOAuthClientLoginBlock) {
   client = new TnsOAuthClient(providerType);
 
   client.loginWithCompletion(completion);
-  /*
-  client.loginWithCompletion((tokenResult: ITnsOAuthTokenResult, error) => {
-    if (error) {
-      console.error("back to main page with error: ");
-      console.error(error);
-    } else {
-      console.log("back to main page with access token: ");
-      console.log(tokenResult);
-    }
-  }); */
 }
 
 export function tnsOauthLogout() {

@@ -7,8 +7,8 @@ export class TnsOaProviderMyCustomProvider implements TnsOaProvider {
   public options: TnsOaProviderOptions;
   public openIdSupport: OpenIdSupportNone = "oid-none";
   public providerType = "myCustomProvider";
-  public authority = "http://127.0.0.1:8000";
-  public tokenEndpointBase = "http://127.0.0.1:8000";
+  public authority = process.env.TRWL_HOST ? process.env.TRWL_HOST : "";
+  public tokenEndpointBase = process.env.TRWL_HOST ? process.env.TRWL_HOST : "";
   public authorizeEndpoint = "/oauth/authorize";
   public tokenEndpoint = "/oauth/token";
   public cookieDomains = ["facebook.com"];
